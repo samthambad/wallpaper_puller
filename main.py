@@ -67,7 +67,12 @@ def display_wallpapers(wallpapers, image_frame):
     # Clear previous images
     for widget in image_frame.winfo_children():
         widget.destroy()
-    
+    print("wallpapers:", wallpapers) 
+    if not len(wallpapers):
+        # Text saying no wallpapers found for current query
+        no_images_text = ctk.CTkLabel(master=image_frame, text="No images found!", text_color="red")
+        no_images_text.pack(padx=10, pady=12)
+        return
     # Configure grid layout
     image_frame.grid_columnconfigure((0, 1), weight=1)
     image_frame.grid_rowconfigure((0, 1), weight=1)
