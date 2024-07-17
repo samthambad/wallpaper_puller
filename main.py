@@ -52,6 +52,7 @@ def create_gui_new():
     root = ctk.CTk()
     ctk.set_appearance_mode("System")
     root.geometry("1280x720")
+    root.title("Wallpaper puller")
     frame = ctk.CTkFrame(master=root)
     frame.pack(pady=20, padx=60, fill="both", expand=True)
     query = ctk.CTkEntry(master=frame, placeholder_text="Enter query...")
@@ -61,6 +62,7 @@ def create_gui_new():
     search_button.pack(padx=10, pady=12)
     image_frame.pack(padx=10, pady=12, fill="both", expand=True)
     root.mainloop()
+
 def display_wallpapers(wallpapers, image_frame):
     # Clear previous images
     for widget in image_frame.winfo_children():
@@ -69,19 +71,19 @@ def display_wallpapers(wallpapers, image_frame):
     # Configure grid layout
     image_frame.grid_columnconfigure((0, 1), weight=1)
     image_frame.grid_rowconfigure((0, 1), weight=1)
-    
-    for i, wallpaper in enumerate(wallpapers[:4]):  # Display first 4 wallpapers
+    for i, wallpaper in enumerate(wallpapers[:4]): # Display first 4 wallpapers
         image_url = wallpaper['thumbs']['small']
         response = requests.get(image_url)
         img_data = response.content
         img = Image.open(BytesIO(img_data))
-        img = img.resize((200, 150), Image.LANCZOS)
-        photo = ImageTk.PhotoImage(img)
+        img = img.resize((400, 300), Image.Resampling.LANCZOS)
+        img = Image.open(BytesIO(img_data))
+        ctk_image = ctk.CTkImage(light_image=img, dark_image=img, size=(400, 300))
         
-        img_button = ctk.CTkButton(master=image_frame, image=photo, text="", width=200, height=150,
-                                   command=lambda w=wallpaper: apply_wallpaper(w['path']))
-        img_button.image = photo
-        img_button.grid(row=i//2, column=i%2, padx=20, pady=20, sticky="nsew")
+        img_button = ctk.CTkButton(master=image_frame, image=ctk_image, text="", width=400, height=300, 
+                                fg_color="transparent", hover_color="gray75",
+                                command=lambda w=wallpaper: apply_wallpaper(w['path']))
+        img_button.grid(row=i//2, column=i%2, padx=10, pady=10, sticky="nsew")
 
 def apply_wallpaper(wallpaper_url):
     print("wallpaper url:", wallpaper_url)
